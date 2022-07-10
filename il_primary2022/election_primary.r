@@ -151,8 +151,11 @@ gg_il13 <- function(
         precinct_border <- enquo(precinct_border_var)
     
         plot <- ggmap(g_il13, base_layer = ggplot(data = precinct_data)) +
-            # precinct-level data
-        geom_sf(mapping = aes(fill = !!precinct_fill, color = !!precinct_border)) +
+        # precinct-level data
+        geom_sf(
+            mapping = aes(fill = !!precinct_fill, color = !!precinct_border),
+            alpha = 0.85
+        ) +
         geom_text(
             mapping = aes(
                 label = precinct,
@@ -425,10 +428,7 @@ g_il13_turnout_votes <- gg_il13(
         lab_caption = "data downloaded July 9, 2022 9am CDT",
         lab_fill = "ballots cast"
     )  +
-    theme(
-        legend.position = "top",
-        plot.subtitle = element_text(color = "red")
-    ) +
+    theme(legend.position = "top") +
     scale_fill_viridis_c(
         direction = -1, 
         label = comma_format(accuracy = 1)
@@ -443,10 +443,10 @@ g_il13_turnout_pct <- gg_il13(
         lab_fill = "% turnout"
     )  +
     theme(legend.position = "top")
-g_il13_spread <- grid.arrange(g_il13_turnout_votes, g_il13_turnout_pct, ncol = 2)
+g_il13_turnout <- grid.arrange(g_il13_turnout_votes, g_il13_turnout_pct, ncol = 2)
 ggsave(
-    plot = g_il13_spread, 
-    filename = paste(od, "votes_il13_spread.jpg", sep = "/"),
+    plot = g_il13_turnout, 
+    filename = paste(od, "turnout_il13.jpg", sep = "/"),
     units = "in", height = 8, width = 12
 )
 
@@ -467,7 +467,8 @@ g_turnout_ward46 <- ggmap(
     # precinct-level data
     geom_sf(
         mapping = aes(fill = pct_turnout),
-        size = 0.25
+        size = 0.25,
+        alpha = 0.85
     ) +
     geom_text(
         mapping = aes(
@@ -506,7 +507,8 @@ g_turnout <- ggmap(g_chicago, base_layer = ggplot(data = d_turnout)) +
     # precinct-level data
     geom_sf(
         mapping = aes(fill = pct_turnout),
-        size = 0.25
+        size = 0.25,
+        alpha = 0.85
     ) +
     geom_text(
         mapping = aes(
