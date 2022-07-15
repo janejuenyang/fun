@@ -19,7 +19,7 @@ library(gridExtra)
 library(gt)
 
 # set directories
-wd <- "~/Documents/Fun/il_primary2022"
+wd <- "~/Documents/fun/il_primary2022"
 dd <- paste(wd, "data", sep = "/")
 od <- paste(wd, "output", sep = "/")
 
