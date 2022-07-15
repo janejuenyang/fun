@@ -174,7 +174,7 @@ gg_il13 <- function(
         ) +
         geom_text(
             data = labels_il13_wards,
-            mapping = aes(x = latitude, y = longitude, label = ward),
+            mapping = aes(x = longitude, y = latitude, label = ward),
             fontface = "bold"
         ) +
         # general formatting
@@ -473,8 +473,8 @@ g_turnout_ward46 <- ggmap(
     geom_text(
         mapping = aes(
             label = precinct,
-            x = latitude,
-            y = longitude
+            x = longitude,
+            y = latitude
         ),
         size = 2,
         color = d_turnout %>% filter(ward == 46) %>% pull(label_color_ward46)
@@ -513,8 +513,8 @@ g_turnout <- ggmap(g_chicago, base_layer = ggplot(data = d_turnout)) +
     geom_text(
         mapping = aes(
             label = precinct,
-            x = latitude,
-            y = longitude
+            x = longitude,
+            y = latitude
         ),
         size = 1,
         color = d_turnout$label_color_city
