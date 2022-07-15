@@ -3,7 +3,7 @@
 # data sources: 
 #   votes: https://www.chicagoelections.gov/en/election-results.html
 #   boundaries: https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Precincts-current-/uvpq-qeeq
-# last edited: 10 july 2022
+# last edited: 15 july 2022
 ################################################################################
 #### initial setup ####
 # clear environment and console
@@ -451,7 +451,7 @@ ggsave(
 )
 
 # ward 46
-g_uptown <- get_googlemap(
+g_ward46 <- get_googlemap(
         center = centroid_wards %>% 
             filter(ward == 46) %>% 
             select(longitude, latitude) %>% 
@@ -461,7 +461,7 @@ g_uptown <- get_googlemap(
     )
 
 g_turnout_ward46 <- ggmap(
-        g_uptown, 
+        g_ward46, 
         base_layer = ggplot(data = d_turnout %>% filter(ward == 46))
     ) +
     # precinct-level data
