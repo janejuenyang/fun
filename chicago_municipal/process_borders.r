@@ -4,7 +4,7 @@
 #   precincts: https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Precincts-current-/uvpq-qeeq
 #   2019 wards: https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Wards-2015-2023-/sp34-6z76
 #   2023 wards: https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Wards-2023-Map/cdf7-bgn3
-# last edited: 15 july 2022
+# last edited: 2 jan 2023
 ################################################################################
 #### initial setup ####
 # clear environment and console
@@ -36,36 +36,77 @@ get_centroids <- function(shapefile) {
     return(res)
 }
 
-#### load/prep data ####
-# precinct boundaries: haven't yet been updated for 2023
-borders_chicago_precincts <- st_read(dsn = paste(dd, "chicago_precincts.shp", sep = "/"))
+#### load data ####
+# precinct boundaries
+borders_chicago_precincts_2019 <- st_read(dsn = paste(dd, 
+    "chicago_precincts_2015-2021.shp", sep = "/"))
 
-# join in precinct centers for labeling
-centroids_precincts <- get_centroids(borders_chicago_precincts) %>%
-    select(ward, precinct, latitude, longitude)
+borders_ward46_precincts_2023 <- st_read(dsn = paste(dd, 
+    "chicago_precincts_2023-.shp", sep = "/")) %>%
+    mutate(
+        ward = 46,
+        precinct = str_extract(Name, "[0-9]+") %>% as.integer()
+    )
 
-borders_chicago_precincts <- borders_chicago_precincts %>%
-    inner_join(centroids_precincts, by = c("ward", "precinct")) %>%
-    mutate(ward_precinct = paste(ward, precinct, sep = "/"))
-
-# ward boundaries
+# ward boundaries and centroids
 borders_chicago_wards_2019 <- st_read(dsn = paste(dd, "wards_2015-2023.shp", sep = "/")) %>%
     select(ward, geometry)
 
 borders_chicago_wards_2023 <- st_read(dsn = paste(dd, "wards_2023-.shp", sep = "/")) %>%
     select(ward, geometry)
 
+#### combine ward data for 2019 and 2023 ####
 # combine ward datasets into one shapefile
 borders_chicago_wards <- rbind(
         borders_chicago_wards_2019 %>% mutate(year = 2019), 
         borders_chicago_wards_2023 %>% mutate(year = 2023)
     ) %>%
-    mutate(year = factor(year))
+    mutate(
+        year = factor(year),
+        ward = as.integer(ward)
+    )
 
 # ward centroids, for fetching underlying road maps
-centroid_wards <- get_centroids(borders_chicago_wards) %>%
+centroids_wards <- get_centroids(borders_chicago_wards) %>%
     select(ward, year, latitude, longitude)
 
 # join ward boundary + centroid data
 borders_chicago_wards <- borders_chicago_wards %>%
-    left_join(centroid_wards, by = c("ward", "year"))
+    left_join(centroids_wards, by = c("ward", "year"))
+
+#### combine ward 46 precinct data for 2019 and 2023 ####
+# add precinct centers for labeling
+centroids_precincts_2019 <- get_centroids(borders_chicago_precincts_2019) %>%
+    select(ward, precinct, latitude, longitude)
+
+borders_chicago_precincts_2019 <- borders_chicago_precincts_2019 %>%
+    inner_join(centroids_precincts_2019, by = c("ward", "precinct"))
+
+centroids_ward46_precincts_2023 <- get_centroids(borders_ward46_precincts_2023) %>%
+    mutate(
+        ward = 46,
+        precinct = str_extract(Name, "[0-9]+") %>% as.integer()
+    ) %>%
+    select(ward, precinct, latitude, longitude)
+
+borders_ward46_precincts_2023 <- borders_ward46_precincts_2023 %>%
+    st_transform(crs = st_crs(borders_chicago_precincts_2019)) %>%
+    inner_join(centroids_ward46_precincts_2023, by = c("ward", "precinct"))
+
+# combine data
+borders_ward46_precincts <- rbind(
+        borders_chicago_precincts_2019 %>% 
+            filter(ward == 46) %>% 
+            mutate(year = 2019) %>%
+            select(year, ward, precinct, latitude, longitude, geometry), 
+        borders_ward46_precincts_2023 %>% 
+            mutate(year = 2023) %>%
+            select(year, ward, precinct, latitude, longitude, geometry)
+    ) %>%
+    mutate(year = as.factor(year))
+
+centroids_ward46_precincts <- rbind(
+        centroids_precincts_2019 %>% filter(ward == 46) %>% mutate(year = 2019), 
+        centroids_ward46_precincts_2023 %>% mutate(year = 2023)
+    ) %>%
+    mutate(year = as.factor(year))
