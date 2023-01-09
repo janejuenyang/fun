@@ -1,6 +1,6 @@
 ################################################################################
 # compare the ward boundaries for 2019 vs. 2023 municipal elections
-# last edited: 15 july 2022
+# last edited: 2 jan 2023
 ################################################################################
 #### initial setup ####
 # load data, directories, libraries
