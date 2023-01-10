@@ -61,8 +61,7 @@ g_ward46 <- get_googlemap(
 # do overlap map
 g_compare_ward46_overlap <- ggmap(
         g_ward46, 
-        base_layer = ggplot(borders_ward46_precincts %>% 
-            filter(ward == 46))
+        base_layer = ggplot(borders_ward46_precincts)
     ) +
     # precincts
     geom_sf(
@@ -85,7 +84,7 @@ g_compare_ward46_overlap <- ggmap(
     ) +
     # precinct labels
     geom_text(
-        data = centroids_ward46_precincts %>% filter(ward == 46),
+        data = centroids_ward46_precincts,
         mapping = aes(
             color = year,
             label = precinct,
@@ -119,8 +118,7 @@ ggsave(paste(od, "compare_ward46_overlap.jpg", sep = "/"),
 # do side-by-side map for improved readability
 g_compare_ward46_faceted <- ggmap(
         g_ward46, 
-        base_layer = ggplot(borders_ward46_precincts %>% 
-            filter(ward == 46))
+        base_layer = ggplot(borders_ward46_precincts)
     ) +
     # precincts
     geom_sf(
@@ -135,7 +133,7 @@ g_compare_ward46_faceted <- ggmap(
     ) +
     # precinct labels
     geom_text(
-        data = centroids_ward46_precincts %>% filter(ward == 46),
+        data = centroids_ward46_precincts,
         mapping = aes(
             label = precinct,
             x = longitude,
