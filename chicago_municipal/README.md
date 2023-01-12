@@ -1,3 +1,3 @@
-# IL Primary 2022
+# Chicago Municipal Elections
 
-On June 28, 2022, Illinois held its mid-term primaries. I worked on [Hoan Huynh's campaign for District 13 State House Representative](https://votehoan.com/) and he won the Democratic primary! There were five candidates and I wanted to understand how the votes broke down by precinct and ward.
+Chicago holds elections every four years. As I canvassed for 46th ward aldermanic candidate [Angela Clay](https://angelafor46.com/) for the 2023 election, I wanted to get a better understanding of how precincts voted in 2019. Chicago consolidated precincts in 2020 so the analysis required finding overlaps between the previous and current borders.
