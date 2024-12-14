@@ -1,2 +1,1 @@
-# Fun
-a place to keep short, fun personal analysis projects
+a place to keep personal analysis projects related to Illinois and Chicago
